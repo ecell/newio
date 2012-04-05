@@ -1,0 +1,27 @@
+``World``
+==========
+
+``World`` は、一つ以上の ``Space`` を格納します。 ``Space`` インスタン
+スは、順序付きディクショナリの ``spaces`` アトリビュート内に保存されて
+います。
+
+ワールドのHDF5データの構造は、下記のようなツリーとして模式化されます::
+
+ <data root>--- application='ecell4', format='world', 
+   |            time=’2012-02-01T10:30:40,
+   |            version=(version number of 3 integers)                                       
+   |
+   +---<metadata>--- name=(name string),
+   |                 (and any world metadata (not defined yet))
+   |
+   +---<spaces>
+         |
+         +---<"name1"> (named space)
+         +---<"name2"> (named space)
+         +---<"name3"> (named space)
+         …
+
+ワールドのトップレベルの属性には、保存時刻を表すtime属性が存在します。
+この属性は、HDF5データの保存時に自動的に取得され更新されます。
+
+

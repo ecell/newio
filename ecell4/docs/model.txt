@@ -1,0 +1,13 @@
+``Model``
+===========
+
+``Model`` は、代謝モデルなどの、あるシミュレーションの実験モデルを表現
+するデータをまとめるためのクラスです。
+
+``Model`` のHDF5データの構造は、下記のようなツリーとして模式化されます。::
+
+ <data root>--- application='ecell4', format='model',
+   |            version=(version number of 3 integers)
+   |
+   +---<metadata>--- name=(name string),
+                     (and any model metadata (not defined yet))

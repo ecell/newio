@@ -1,0 +1,38 @@
+``Space``
+===============
+
+``Space`` のHDF5データの構造は、下記のようなツリーとして模式化されます::
+
+ <data root>--- application='ecell4', format='particlespace',
+   |            version=(version number of 3 integers)
+   |
+   +---<metadata>--- name=(name string),
+                     (and any model metadata (not defined yet))
+                                                                                                                                
+
+``Space`` は、データを出力するプログラムが規定する保存様式によってバリ
+エーションを持ちます。例えば、パーティクルベースのシミュレータが、スペー
+スにデータを保存する場合のデータの保存形式は、シミュレータがスペースを
+どう捉えているに合わせて拡張していく必要があります。一方、スペースは、
+ワールドに対して共通のインタフェースを提供する必要があります。つまり、
+どのプログラムが出力したスペースでも、理想的には別のプログラムに対して
+パーティクルの位置なりパーティクルの濃度（数）なりといった情報を提供す
+るインタフェースを備えていなくてはなりません。このインタフェースの定義
+と実装については、今後の課題となっています。以下は、パーティク
+ルを保存した場合のスペースのHDF5データ構造の例です。::
+
+ <data root>--- application='ecell4', format='particlespace',
+   |            version=(version number of 3 integers)
+   |
+   +---<metadata>--- name=(name string),
+   |                 (and any model metadata (not defined yet))
+   |
+   +---<particles>--- n_particles=(integer)
+        |
+        +---<id>
+        |     (integer dataset of n_particles)
+        +---<species_id>
+        |     (integer dataset of n_particles)
+        +---<position＞
+             (float64 dataset of 3*n_particles)
+
