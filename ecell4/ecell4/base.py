@@ -90,9 +90,9 @@ class Component(object):
         """Returns component type name.
         """
         return self.__class__.__name__.lower()
-        
+
     @classmethod
-    def Load(cls, hdf5_or_filename, strict_version=True):
+    def from_file(cls, hdf5_or_filename, strict_version=True):
         """Load instance from a file.
 
         - hdf5_or_filename: h5py.File instance or string of file path.
@@ -101,6 +101,9 @@ class Component(object):
         instance = cls()
         instance.load(hdf5_or_filename, strict_version)
         return instance
+
+    # for backward compatibility
+    Load = from_file
             
     def load(self, hdf5_or_filename, strict_version=True):
         """Load data from a file (into exisiting instance).

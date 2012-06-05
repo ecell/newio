@@ -1,7 +1,4 @@
 # coding: utf-8
-
-# PORTING DOT DONE YET, JUST A PLACEHOLDER STUFF.
-
 """
 visualizer.py:
 
@@ -43,191 +40,6 @@ import domain_kind_constants
 import rgb_colors
 import default_settings
 import copy
-
-
-class VisualizerError(Exception):
-
-    "Exception class for visualizer"
-
-    def __init__(self, info):
-        self.__info = info
-
-    def __repr__(self):
-        return self.__info
-
-    def __str__(self):
-        return self.__info
-
-
-class Settings(object):
-
-    "Visualization setting class for Visualizer"
-
-    def __init__(self, user_settings_dict = None):
-
-        settings_dict = default_settings.__dict__.copy()
-
-        if user_settings_dict is not None:
-            if type(user_settings_dict) != type({}):
-                print 'Illegal argument type for constructor of Settings class'
-                sys.exit()
-            settings_dict.update(user_settings_dict)
-
-        for key, val in settings_dict.items():
-            if key[0] != '_': # Data skip for private variables in setting_dict.
-                if type(val) == type({}) or type(val) == type([]):
-                    copy_val = copy.deepcopy(val)
-                else:
-                    copy_val = val
-                setattr(self, key, copy_val)
-
-    def __set_data(self, key, val):
-        if val != None:
-            setattr(self, key, val)
-
-    def set_image(self,
-                  height = None,
-                  width = None,
-                  background_color = None,
-                  file_name_format = None
-                  ):
-
-        self.__set_data('image_height', height)
-        self.__set_data('image_width', width)
-        self.__set_data('image_background_color', background_color)
-        self.__set_data('image_file_name_format', file_name_format)
-
-    def set_ffmpeg(self,
-                   movie_file_name = None,
-                   bin_path = None,
-                   additional_options = None
-                   ):
-        self.__set_data('ffmpeg_movie_file_name', movie_file_name)
-        self.__set_data('ffmpeg_bin_path', bin_path)
-        self.__set_data('ffmpeg_additional_options', additional_options)
-
-    def set_camera(self,
-                   forcal_point = None,
-                   base_position = None,
-                   azimuth = None,
-                   elevation = None,
-                   view_angle = None
-                   ):
-        self.__set_data('camera_forcal_point', forcal_point)
-        self.__set_data('camera_base_position', base_position)
-        self.__set_data('camera_azimuth', azimuth)
-        self.__set_data('camera_elevation', elevation)
-        self.__set_data('camera_view_angle', view_angle)
-
-    def set_light(self,
-                  intensity = None
-                  ):
-        self.__set_data('light_intensity', intensity)
-
-    def set_species_legend(self,
-                           display = None,
-                           border_display = None,
-                           location = None,
-                           height = None,
-                           width = None,
-                           offset = None
-                           ):
-        self.__set_data('species_legend_display', display)
-        self.__set_data('species_legend_border_display', border_display)
-        self.__set_data('species_legend_location', location)
-        self.__set_data('species_legend_height', height)
-        self.__set_data('species_legend_width', width)
-        self.__set_data('species_legend_offset', offset)
-
-    def set_time_legend(self,
-                        display = None,
-                        border_display = None,
-                        format = None,
-                        location = None,
-                        height = None,
-                        width = None,
-                        offset = None
-                        ):
-        self.__set_data('time_legend_display', display)
-        self.__set_data('time_legend_border_display', border_display)
-        self.__set_data('time_legend_format', format)
-        self.__set_data('time_legend_location', location)
-        self.__set_data('time_legend_height', height)
-        self.__set_data('time_legend_width', width)
-        self.__set_data('time_legend_offset', offset)
-
-    def set_wireframed_cube(self,
-                            display = None
-                            ):
-        self.__set_data('wireframed_cube_diplay', display)
-
-    def set_axis_annotation(self,
-                            display = None,
-                            color = None
-                            ):
-        self.__set_data('axis_annotation_display', display)
-        self.__set_data('axis_annotation_color', color)
-
-    def set_fluorimetry(self,
-                         display = None,
-                         axial_voxel_number = None,
-                         background_color = None,
-                         shadow_display = None,
-                         accumulation_mode = None,
-                         ):
-        self.__set_data('fluorimetry_display', display)
-        self.__set_data('fluorimetry_axial_voxel_number', axial_voxel_number)
-        self.__set_data('fluorimetry_background_color', background_color)
-        self.__set_data('fluorimetry_shadow_display', shadow_display)
-        self.__set_data('fluorimetry_accumulation_mode', accumulation_mode)
-
-    def add_plane_surface(self,
-                         color = None,
-                         opacity = None,
-                         origin = None,
-                         axis1 = None,
-                         axis2 = None
-                         ):
-
-        color_ = self.plane_surface_color
-        opacity_ = self.plane_surface_opacity
-        origin_ = self.plane_surface_origin
-        axis1_ = self.plane_surface_axis_1
-        axis2_ = self.plane_surface_axis_2
-
-        if color != None: color_ = color
-        if opacity != None: opacity_ = opacity
-        if origin != None: origin_ = origin
-        if axis1 != None: axis1_ = axis1
-        if axis2 != None: axis2_ = axis2
-
-        self.plane_surface_list.append({'color':color_,
-                                        'opacity':opacity_,
-                                        'origin':origin_,
-                                        'axis1':axis1_,
-                                        'axis2':axis2_})
-
-    def pfilter_func(self, particle, display_species_id, pattr):
-        return pattr
-
-    def pfilter_sid_map_func(self, species_id):
-        return species_id
-
-    def pfilter_sid_to_pattr_func(self, display_species_id):
-        return self.particle_attrs.get(display_species_id,
-                                       self.default_particle_attr)
-
-    def dump(self):
-        dump_list = []
-        for key in self.__slots__:
-            dump_list.append((key, getattr(self, key, None)))
-
-        dump_list.sort(lambda a, b:cmp(a[0], b[0]))
-
-        print '>>>>>>> Settings >>>>>>>'
-        for x in dump_list:
-            print x[0], ':', x[1]
-        print '<<<<<<<<<<<<<<<<<<<<<<<<'
 
 
 class Renderer(object):
@@ -930,4 +742,175 @@ class InteractingVisualizer(Visualizer):
         self.timer_id = self.interactor.CreateRepeatingTimer(1000)
         self.interactor.AddObserver('TimerEvent', self.__timer_callback, .0)
         self.interactor.Start()
+
+class Settings(object):
+
+    "Visualization setting class for Visualizer"
+
+    def __init__(self, user_settings_dict = None):
+
+        settings_dict = default_settings.__dict__.copy()
+
+        if user_settings_dict is not None:
+            if type(user_settings_dict) != type({}):
+                print 'Illegal argument type for constructor of Settings class'
+                sys.exit()
+            settings_dict.update(user_settings_dict)
+
+        for key, val in settings_dict.items():
+            if key[0] != '_': # Data skip for private variables in setting_dict.
+                if type(val) == type({}) or type(val) == type([]):
+                    copy_val = copy.deepcopy(val)
+                else:
+                    copy_val = val
+                setattr(self, key, copy_val)
+
+    def __set_data(self, key, val):
+        if val != None:
+            setattr(self, key, val)
+
+    def set_image(self,
+                  height = None,
+                  width = None,
+                  background_color = None,
+                  file_name_format = None
+                  ):
+
+        self.__set_data('image_height', height)
+        self.__set_data('image_width', width)
+        self.__set_data('image_background_color', background_color)
+        self.__set_data('image_file_name_format', file_name_format)
+
+    def set_ffmpeg(self,
+                   movie_file_name = None,
+                   bin_path = None,
+                   additional_options = None
+                   ):
+        self.__set_data('ffmpeg_movie_file_name', movie_file_name)
+        self.__set_data('ffmpeg_bin_path', bin_path)
+        self.__set_data('ffmpeg_additional_options', additional_options)
+
+    def set_camera(self,
+                   forcal_point = None,
+                   base_position = None,
+                   azimuth = None,
+                   elevation = None,
+                   view_angle = None
+                   ):
+        self.__set_data('camera_forcal_point', forcal_point)
+        self.__set_data('camera_base_position', base_position)
+        self.__set_data('camera_azimuth', azimuth)
+        self.__set_data('camera_elevation', elevation)
+        self.__set_data('camera_view_angle', view_angle)
+
+    def set_light(self,
+                  intensity = None
+                  ):
+        self.__set_data('light_intensity', intensity)
+
+    def set_species_legend(self,
+                           display = None,
+                           border_display = None,
+                           location = None,
+                           height = None,
+                           width = None,
+                           offset = None
+                           ):
+        self.__set_data('species_legend_display', display)
+        self.__set_data('species_legend_border_display', border_display)
+        self.__set_data('species_legend_location', location)
+        self.__set_data('species_legend_height', height)
+        self.__set_data('species_legend_width', width)
+        self.__set_data('species_legend_offset', offset)
+
+    def set_time_legend(self,
+                        display = None,
+                        border_display = None,
+                        format = None,
+                        location = None,
+                        height = None,
+                        width = None,
+                        offset = None
+                        ):
+        self.__set_data('time_legend_display', display)
+        self.__set_data('time_legend_border_display', border_display)
+        self.__set_data('time_legend_format', format)
+        self.__set_data('time_legend_location', location)
+        self.__set_data('time_legend_height', height)
+        self.__set_data('time_legend_width', width)
+        self.__set_data('time_legend_offset', offset)
+
+    def set_wireframed_cube(self,
+                            display = None
+                            ):
+        self.__set_data('wireframed_cube_diplay', display)
+
+    def set_axis_annotation(self,
+                            display = None,
+                            color = None
+                            ):
+        self.__set_data('axis_annotation_display', display)
+        self.__set_data('axis_annotation_color', color)
+
+    def set_fluorimetry(self,
+                         display = None,
+                         axial_voxel_number = None,
+                         background_color = None,
+                         shadow_display = None,
+                         accumulation_mode = None,
+                         ):
+        self.__set_data('fluorimetry_display', display)
+        self.__set_data('fluorimetry_axial_voxel_number', axial_voxel_number)
+        self.__set_data('fluorimetry_background_color', background_color)
+        self.__set_data('fluorimetry_shadow_display', shadow_display)
+        self.__set_data('fluorimetry_accumulation_mode', accumulation_mode)
+
+    def add_plane_surface(self,
+                         color = None,
+                         opacity = None,
+                         origin = None,
+                         axis1 = None,
+                         axis2 = None
+                         ):
+
+        color_ = self.plane_surface_color
+        opacity_ = self.plane_surface_opacity
+        origin_ = self.plane_surface_origin
+        axis1_ = self.plane_surface_axis_1
+        axis2_ = self.plane_surface_axis_2
+
+        if color != None: color_ = color
+        if opacity != None: opacity_ = opacity
+        if origin != None: origin_ = origin
+        if axis1 != None: axis1_ = axis1
+        if axis2 != None: axis2_ = axis2
+
+        self.plane_surface_list.append({'color':color_,
+                                        'opacity':opacity_,
+                                        'origin':origin_,
+                                        'axis1':axis1_,
+                                        'axis2':axis2_})
+
+    def pfilter_func(self, particle, display_species_id, pattr):
+        return pattr
+
+    def pfilter_sid_map_func(self, species_id):
+        return species_id
+
+    def pfilter_sid_to_pattr_func(self, display_species_id):
+        return self.particle_attrs.get(display_species_id,
+                                       self.default_particle_attr)
+
+    def dump(self):
+        dump_list = []
+        for key in self.__slots__:
+            dump_list.append((key, getattr(self, key, None)))
+
+        dump_list.sort(lambda a, b:cmp(a[0], b[0]))
+
+        print '>>>>>>> Settings >>>>>>>'
+        for x in dump_list:
+            print x[0], ':', x[1]
+        print '<<<<<<<<<<<<<<<<<<<<<<<<'
+
 
